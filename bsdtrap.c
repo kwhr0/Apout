@@ -3,14 +3,15 @@
  * $Revision: 1.66 $
  * $Date: 2008/05/19 13:26:42 $
  */
-#ifdef EMU211
 
 /* NOTE NOTE NOTE NOTE
  * Grep for the word DONE in this file to see the implemented syscalls.
  */
 
-#define BSDTRAP_NAME
 #include "defines.h"
+#ifdef EMU211
+
+#define BSDTRAP_NAME
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <stdlib.h>

@@ -3,8 +3,8 @@
  * $Revision: 1.16 $
  * $Date: 2008/05/19 13:26:42 $
  */
-#ifdef EMUV1
 #include "defines.h"
+#ifdef EMUV1
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <time.h>

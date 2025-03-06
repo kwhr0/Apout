@@ -7,6 +7,8 @@
 #include "defines.h"
 #include "aout.h"
 
+TrapFunc emt_func, trap_func;
+
 /* Array of 64K for data and instruction space */
 static u_int8_t darray[PDP_MEM_SIZE], iarray[PDP_MEM_SIZE];
 
@@ -79,7 +81,7 @@ static char *default_envp[4] = {
 static int default_envc = 4;
 
 /* Prototypes */
-static void set_arg_env(int want_env);
+static uint16_t set_arg_env(int want_env);
 
 
 /* Load the a.out header from the given file pointer, and return it.
@@ -141,6 +143,8 @@ int load_aout_header(FILE * zin, struct exec *E)
         if (E->a_magic2 == V6_M2)
             return (IS_V6);
         if (E->a_magic2 == V7_M2)
+            return (IS_V7);
+        if (E->a_magic2 == V7_ACK)
             return (IS_V7);
         if (E->a_magic2 == BSD_M2)
             return (IS_211BSD);
@@ -488,38 +492,31 @@ int load_a_out(const char *file, const char *origpath, int want_env)
         return (-1);
     }
 
-
-    /* Initialise the instruction table for our environment */
-    switch (Binary) {
-#ifdef EMU211
-    case IS_211BSD:
-        for (i = 548; i < 552; i++)
-            itab[i] = bsdtrap;
-        break;
-#endif
+	switch (Binary) {
+		case IS_211BSD:
+			emt_func = emt;
+			trap_func = bsdtrap;
+			break;
 #ifdef EMUV1
-    case IS_V1:
-    case IS_V2:
-        for (i = 544; i < 548; i++)
-            itab[i] = rts;
-        for (i = 548; i < 552; i++)
-            itab[i] = v1trap;
-        break;
+		case IS_V1:
+		case IS_V2:
+			trap_func = v1trap;
+			break;
 #endif
-    case IS_A68:
-        for (i = 544; i < 552; i++)
-            itab[i] = v7trap;
-        break;
-    case IS_V5:
-    case IS_V6:
-    case IS_V7:
-        for (i = 548; i < 552; i++)
-            itab[i] = v7trap;
-        break;
-    default:
-        fprintf(stderr, "Apout - unknown Unix version for %s\n", file);
-        exit(EXIT_FAILURE);
-    }
+		case IS_A68:
+			emt_func = trap_func = v7trap;
+			break;
+		case IS_V5:
+		case IS_V6:
+		case IS_V7:
+			emt_func = emt;
+			trap_func = v7trap;
+			break;
+		default:
+			fprintf(stderr, "Apout - unknown Unix version for %s\n", file);
+			exit(EXIT_FAILURE);
+			break;
+	}
 
 #ifdef ZERO_MEMORY
     memset(darray, 0, PDP_MEM_SIZE);	/* Clear all memory */
@@ -578,11 +575,8 @@ int load_a_out(const char *file, const char *origpath, int want_env)
                     ibase += j;
                 }
             }
-
-            /* And deal with the emt instructions */
-            for (i = 544; i < 548; i++)
-                itab[i] = do_bsd_overlay;
-        }
+			emt_func = do_bsd_overlay;
+		}
 #endif
 
     /* Now load the data into dbase */
@@ -604,13 +598,15 @@ int load_a_out(const char *file, const char *origpath, int want_env)
 
     /* Set up the registers and flags, and the stack */
     (void) fclose(zin);
-    sim_init();
-    regs[PC] = e.a_entry;
+    sim_init(set_arg_env(want_env), e.a_entry);
+	/*
+	regs[PC] = e.a_entry;
     if (Binary == IS_A68) {
         regs[5] = e.max_ovl;
         regs[4] = 0160000;
     }
-    set_arg_env(want_env);
+    regs[SP] = set_arg_env(want_env);
+	 */
     return (0);
 }
 
@@ -656,7 +652,7 @@ int load_a_out(const char *file, const char *origpath, int want_env)
  * used by V7, 2.9BSD, 2.11BSD. Otherwise, don't create environment
  * variables: used by V1 up to V6.
  */
-static void set_arg_env(int want_env)
+static uint16_t set_arg_env(int want_env)
 {
     int i, posn, len;
     int eposn[MAX_ARGS];
@@ -729,7 +725,7 @@ static void set_arg_env(int want_env)
     }
     posn -= 2;
     sl_word(posn, (u_int16_t) Argc);	/* Save the count of args */
-    regs[SP] = (u_int16_t) posn;	/* and initialise the SP */
+	return posn;
 }
 
 

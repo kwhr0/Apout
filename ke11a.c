@@ -6,8 +6,8 @@
  * $Revision: 1.7 $
  * $Date: 1999/12/28 03:57:31 $
  */
-#ifdef EMUV1
 #include "defines.h"
+#ifdef EMUV1
 #include <unistd.h>
 
 void eae_wr(u_int16_t data, u_int16_t PA, int32_t access);

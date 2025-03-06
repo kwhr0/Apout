@@ -3,8 +3,8 @@
  *
  * $Revision: 1.13 $ $Date: 1999/12/27 04:38:29 $
  */
-#ifdef EMU211
 #include "defines.h"
+#ifdef EMU211
 #include <sys/ioctl.h>
 #include <termios.h>
 #include "bsdtrap.h"
