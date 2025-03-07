@@ -12,7 +12,7 @@ PREFIX?=/usr/local
 MANDIR=$(PREFIX)/share/man/man1
 BINDIR=$(PREFIX)/bin
 
-OBJS =	DCJ11.o Wapper.o aout.o bsd_ioctl.o bsd_signal.o bsdtrap.o \
+OBJS =	DCJ11.o Wrapper.o aout.o bsd_ioctl.o bsd_signal.o bsdtrap.o \
 	cpu.o ke11a.o magic.o main.o v1trap.o v7trap.o
 
 all: apout
@@ -31,7 +31,7 @@ clean:
 
 # Dependencies for object files
 DCJ11.o: DCJ11.cpp DCJ11.h defines.h Makefile
-Wrapper.o: Wrapper.cpp DCJ11.h CompareProcess.h Makefile
+Wrapper.o: Wrapper.cpp DCJ11.h Makefile
 aout.o: aout.c defines.h aout.h Makefile
 bsd_ioctl.o: bsd_ioctl.c defines.h Makefile
 bsd_signal.o: bsd_signal.c defines.h bsdtrap.h Makefile

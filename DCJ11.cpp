@@ -269,10 +269,13 @@ template<int M> void DCJ11::ashc(u16 op) {
 
 template<int M> void DCJ11::div(u16 op) {
 	ea<1, M>(op, [&](s16 v) {
-		s32 d = gpr[op >> 6 & 7] << 16 | gpr[(op >> 6 & 7) | 1], q = d / v, r = d % v; // in case v==0 ?
-		fdiv(q, v, d);
-		stR(op >> 6 & 7, q);
-		stR((op >> 6 & 7) | 1, r);
+		if (v) {
+			s32 d = gpr[op >> 6 & 7] << 16 | gpr[(op >> 6 & 7) | 1], q = d / v, r = d % v;
+			fdiv(q, v, d);
+			stR(op >> 6 & 7, q);
+			stR((op >> 6 & 7) | 1, r);
+		}
+		else fdiv(0, 0, 0);
 	});
 }
 
