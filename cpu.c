@@ -21,7 +21,7 @@ int CC_C = 0;			/* increase by using shorts or bytes */
 
 /* Run until told to stop. */
 void run() {
-    while (1)
+	while (1)
 		Execute(10000);
 }
 

@@ -600,12 +600,10 @@ int load_a_out(const char *file, const char *origpath, int want_env)
     (void) fclose(zin);
     sim_init(set_arg_env(want_env), e.a_entry);
 	/*
-	regs[PC] = e.a_entry;
     if (Binary == IS_A68) {
         regs[5] = e.max_ovl;
         regs[4] = 0160000;
     }
-    regs[SP] = set_arg_env(want_env);
 	 */
     return (0);
 }

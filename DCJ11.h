@@ -80,7 +80,7 @@ private:
 		return data;
 	}
 	u32 ld4(u16 adr) {
-		u32 data = *(uint32_t *)&(dspace[adr]);
+		u32 data = (u32 &)dspace[adr];
 		DCJ11_TRACE_LOG(adr, data << 16 | data >> 16, acsLoad32);
 		return data << 16 | data >> 16;
 	}
