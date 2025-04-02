@@ -180,11 +180,9 @@ DCJ11::DCJ11() {
 #endif
 }
 
-void DCJ11::Reset(u16 sp, u16 pc) {
+void DCJ11::Reset() {
 	memset(gpr, 0, sizeof(gpr));
 	memset(fpr, 0, sizeof(fpr));
-	gpr[6] = sp;
-	gpr[7] = pc;
 	psw = fps = 0;
 	islong = isdouble = false;
 }

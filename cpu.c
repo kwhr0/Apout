@@ -26,9 +26,8 @@ void run() {
 }
 
 /* sim_init() - Initialize the cpu registers. */
-void sim_init(uint16_t sp, uint16_t pc) {
-	if (Binary >= IS_V3) sp &= ~1; // 可能なら偶数にする
-	Reset(sp, pc);
+void sim_init(void) {
+	Reset();
 }
 
 void bus_error(int signo)

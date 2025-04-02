@@ -41,8 +41,9 @@ class DCJ11 {
 	union FPR { u32 i; float f; };
 public:
 	DCJ11();
-	void Reset(u16 sp, u16 pc);
+	void Reset();
 	int Execute(int n);
+	void SetGPR(u16 num, u16 data) { gpr[num] = data; }
 #if DCJ11_TRACE
 	void StopTrace();
 #endif

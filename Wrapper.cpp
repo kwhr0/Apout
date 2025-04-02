@@ -2,6 +2,11 @@
 
 static DCJ11 cpu;
 
-void Reset(uint16_t sp, uint16_t pc) { cpu.Reset(sp, pc); }
+void Reset() { cpu.Reset(); }
+
+void RegSet(uint16_t num, uint16_t data) {
+	regs[num] = data;
+	cpu.SetGPR(num, data);
+}
 
 void Execute(int n) { cpu.Execute(n); }

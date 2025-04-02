@@ -598,13 +598,15 @@ int load_a_out(const char *file, const char *origpath, int want_env)
 
     /* Set up the registers and flags, and the stack */
     (void) fclose(zin);
-    sim_init(set_arg_env(want_env), e.a_entry);
-	/*
-    if (Binary == IS_A68) {
-        regs[5] = e.max_ovl;
-        regs[4] = 0160000;
-    }
-	 */
+    sim_init();
+	RegSet(PC, e.a_entry);
+	uint16_t sp = set_arg_env(want_env);
+	if (Binary >= IS_V3) sp &= ~1; // 可能なら偶数にする
+	RegSet(SP, sp);
+	if (Binary == IS_A68) {
+		RegSet(5, e.max_ovl);
+		RegSet(4, 0160000);
+	}
     return (0);
 }
 
